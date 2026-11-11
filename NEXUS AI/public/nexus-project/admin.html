@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS AI – Admin Control (HTML/CSS/JS)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-neutral-100/60 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 min-h-screen flex flex-col antialiased font-sans">
+
+  <!-- Main Viewport Layout -->
+  <div class="flex-1 flex overflow-hidden h-screen">
+    
+    <!-- Left Sidebar -->
+    <aside class="w-64 shrink-0 flex flex-col border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-800 select-none">
+      
+      <!-- Brand -->
+      <div class="px-6 py-5 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded bg-amber-600 text-white flex items-center justify-center font-bold text-xs">
+              A
+            </div>
+            <h1 class="font-bold tracking-tight text-base uppercase">ADMIN CONTROL</h1>
+          </div>
+          <p class="text-[11px] text-neutral-500 mt-1">Governance & Telemetry</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        <div class="space-y-1">
+          <div class="px-3 pb-2 text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">
+            Governance
+          </div>
+          <button onclick="switchAdminView('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors bg-neutral-100 text-neutral-900 font-semibold">
+            <span>●</span>
+            <span>Dashboard</span>
+          </button>
+          <button onclick="switchAdminView('users')" id="nav-users" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50">
+            <span>○</span>
+            <span>Users Directory</span>
+          </button>
+          <button onclick="switchAdminView('models')" id="nav-models" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50">
+            <span>○</span>
+            <span>Neural Models</span>
+          </button>
+          <button onclick="switchAdminView('subscriptions')" id="nav-subscriptions" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50">
+            <span>○</span>
+            <span>Subscriptions</span>
+          </button>
+          <button onclick="switchAdminView('analytics')" id="nav-analytics" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50">
+            <span>○</span>
+            <span>Reports & Telemetry</span>
+          </button>
+        </div>
+
+        <div class="space-y-1 pt-2 border-t border-neutral-100">
+          <div class="px-3 pb-1 text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">
+            Admin Authentication
+          </div>
+          <a href="auth.html" class="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 rounded hover:bg-neutral-50">
+            <span>→</span>
+            <span>Admin Sign In</span>
+          </a>
+          <a href="auth.html" class="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 rounded hover:bg-neutral-50">
+            <span>+</span>
+            <span>Register Admin</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Bottom Switcher -->
+      <div class="p-3 border-t border-neutral-200 bg-neutral-50/50">
+        <a href="index.html" class="w-full flex items-center justify-between p-2.5 rounded border border-neutral-200 bg-white hover:border-neutral-400 text-xs shadow-xs">
+          <div>
+            <div class="font-semibold text-neutral-900">System Admin</div>
+            <div class="text-[10px] text-neutral-500">Switch to User Workspace</div>
+          </div>
+          <span>→</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      
+      <!-- Top Header -->
+      <header class="h-14 px-6 border-b border-neutral-200 bg-white flex items-center justify-between gap-4 select-none">
+        <div class="flex items-center gap-3">
+          <span class="text-xs px-2.5 py-0.5 rounded font-mono font-medium bg-amber-50 text-amber-800 border border-amber-200">
+            Administrative Governance
+          </span>
+          <span class="text-neutral-400 text-xs">/</span>
+          <span id="header-breadcrumb" class="text-xs font-semibold text-neutral-900">System Telemetry Dashboard</span>
+        </div>
+
+        <div class="flex items-center gap-3 text-xs">
+          <a href="auth.html" class="px-2.5 py-1 text-xs font-medium rounded border border-neutral-200 hover:bg-neutral-100">
+            Admin Auth
+          </a>
+          <a href="index.html" class="px-3 py-1 text-xs font-semibold rounded bg-neutral-900 text-white hover:bg-neutral-800">
+            Researcher Workspace →
+          </a>
+        </div>
+      </header>
+
+      <!-- Views Container -->
+      <main class="flex-1 overflow-hidden relative flex flex-col">
+        
+        <!-- 1. DASHBOARD VIEW -->
+        <div id="view-dashboard" class="flex-1 overflow-y-auto p-8 space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold tracking-tight text-neutral-900">Admin Dashboard</h2>
+              <p class="text-xs text-neutral-500 mt-0.5">System overview • global telemetry monitoring & compute governance.</p>
+            </div>
+            <button onclick="simulateEvent()" class="px-3 py-1.5 text-xs font-medium rounded bg-neutral-900 text-white hover:bg-neutral-800 shadow-xs">
+              Simulate Stream Event
+            </button>
+          </div>
+
+          <!-- 4 KPIs -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="p-5 rounded-lg border border-neutral-200 bg-white shadow-xs">
+              <div class="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">AI MODELS</div>
+              <div class="text-2xl font-extrabold font-mono text-neutral-900 my-2">99.9%</div>
+              <div class="text-[11px] text-neutral-400">Cluster Uptime</div>
+            </div>
+            <div class="p-5 rounded-lg border border-neutral-200 bg-white shadow-xs">
+              <div class="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">USERS REGISTERED</div>
+              <div class="text-2xl font-extrabold font-mono text-neutral-900 my-2">1,482</div>
+              <div class="text-[11px] text-neutral-400">+18% this month</div>
+            </div>
+            <div class="p-5 rounded-lg border border-neutral-200 bg-white shadow-xs">
+              <div class="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">CORE SERVICES</div>
+              <div class="text-2xl font-extrabold font-mono text-emerald-600 my-2">ONLINE</div>
+              <div class="text-[11px] text-neutral-400">All nodes healthy</div>
+            </div>
+            <div class="p-5 rounded-lg border border-neutral-200 bg-white shadow-xs">
+              <div class="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">COMPUTE USAGE</div>
+              <div class="text-2xl font-extrabold font-mono text-neutral-900 my-2">62%</div>
+              <div class="text-[11px] text-neutral-400">Allocated 14.8 TFLOPS</div>
+            </div>
+          </div>
+
+          <!-- Activity & Health -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-2 rounded-lg border border-neutral-200 bg-white shadow-xs flex flex-col">
+              <div class="px-5 py-3 border-b border-neutral-200 text-xs font-semibold uppercase tracking-wider text-neutral-700">
+                SYSTEM ACTIVITY STREAM
+              </div>
+              <div class="p-5 space-y-3" id="activity-stream">
+                <div class="p-3.5 rounded-md border border-neutral-200 bg-neutral-50/50 flex justify-between text-xs">
+                  <span><strong>User Registered</strong> · new professional tier</span>
+                  <span class="text-neutral-400 font-mono text-[11px]">Just now</span>
+                </div>
+                <div class="p-3.5 rounded-md border border-neutral-200 bg-neutral-50/50 flex justify-between text-xs">
+                  <span><strong>Model Updated</strong> · GPT-Nexus v4.2.1</span>
+                  <span class="text-neutral-400 font-mono text-[11px]">12 mins ago</span>
+                </div>
+                <div class="p-3.5 rounded-md border border-neutral-200 bg-neutral-50/50 flex justify-between text-xs">
+                  <span><strong>Subscription Changed</strong> · Enterprise</span>
+                  <span class="text-neutral-400 font-mono text-[11px]">45 mins ago</span>
+                </div>
+                <div class="p-3.5 rounded-md border border-neutral-200 bg-neutral-50/50 flex justify-between text-xs">
+                  <span><strong>Workspace Created</strong> · Project Aether</span>
+                  <span class="text-neutral-400 font-mono text-[11px]">2 hours ago</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-lg border border-neutral-200 bg-white shadow-xs flex flex-col">
+              <div class="px-5 py-3 border-b border-neutral-200 text-xs font-semibold uppercase tracking-wider text-neutral-700">
+                SYSTEM HEALTH STATUS
+              </div>
+              <div class="p-5 space-y-3 flex-1 text-xs">
+                <div class="p-3.5 rounded-md border border-neutral-200 bg-neutral-50/50 flex justify-between">
+                  <span>AI Models</span>
+                  <strong class="text-emerald-600 font-mono">Healthy</strong>
+                </div>
+                <div class="p-3.5 rounded-md border border-neutral-200 bg-neutral-50/50 flex justify-between">
+                  <span>Users</span>
+                  <strong class="text-emerald-600 font-mono">Healthy</strong>
+                </div>
+                <div class="p-3.5 rounded-md border border-neutral-200 bg-neutral-50/50 flex justify-between">
+                  <span>Core Services</span>
+                  <strong class="text-emerald-600 font-mono">Online</strong>
+                </div>
+                <div class="p-3.5 rounded-md border border-neutral-200 bg-neutral-50/50 flex justify-between">
+                  <span>Security</span>
+                  <strong class="text-emerald-600 font-mono">Zero Breaches</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. USERS DIRECTORY VIEW -->
+        <div id="view-users" class="hidden flex-1 overflow-y-auto p-8 space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-bold tracking-tight text-neutral-900">Users</h2>
+              <p class="text-xs text-neutral-500 mt-0.5">Clean user directory governance & access permissions.</p>
+            </div>
+            <button onclick="alert('Add user modal triggered!')" class="px-3 py-1.5 text-xs font-medium rounded bg-neutral-900 text-white shadow-xs">
+              + Add User
+            </button>
+          </div>
+
+          <div class="rounded-lg border border-neutral-200 bg-white shadow-xs overflow-hidden">
+            <div class="p-4 border-b border-neutral-200 bg-neutral-50/50 flex justify-between">
+              <input type="text" placeholder="Search users by name, email..." class="w-80 px-3 py-1.5 text-xs rounded border border-neutral-200 bg-white outline-none">
+              <div class="text-xs text-neutral-400">Total: 4 verified accounts</div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-neutral-50 border-b border-neutral-200 text-neutral-500 uppercase text-[11px]">
+                  <tr>
+                    <th class="py-3 px-5">USER</th>
+                    <th class="py-3 px-5">EMAIL</th>
+                    <th class="py-3 px-5">PLAN</th>
+                    <th class="py-3 px-5">STATUS</th>
+                    <th class="py-3 px-5">LAST ACTIVE</th>
+                    <th class="py-3 px-5 text-right">ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-neutral-200">
+                  <tr class="hover:bg-neutral-50">
+                    <td class="py-3.5 px-5 font-semibold text-neutral-900">Dr. Evelyn Vance</td>
+                    <td class="py-3.5 px-5 font-mono text-neutral-500">evelyn.vance@nexus.ai</td>
+                    <td class="py-3.5 px-5 font-mono">PROFESSIONAL</td>
+                    <td class="py-3.5 px-5 font-mono font-semibold text-emerald-600">ACTIVE</td>
+                    <td class="py-3.5 px-5 font-mono text-neutral-400">10 mins</td>
+                    <td class="py-3.5 px-5 text-right font-medium">
+                      <span class="cursor-pointer hover:underline" onclick="alert('Viewing Dr. Evelyn Vance')">View</span> ·
+                      <span class="cursor-pointer hover:underline" onclick="alert('Editing Dr. Evelyn Vance')">Edit</span> ·
+                      <span class="cursor-pointer text-rose-600 hover:underline" onclick="alert('User status toggled')">Block</span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-neutral-50">
+                    <td class="py-3.5 px-5 font-semibold text-neutral-900">Dr. Marcus Thorne</td>
+                    <td class="py-3.5 px-5 font-mono text-neutral-500">m.thorne@nexus.ai</td>
+                    <td class="py-3.5 px-5 font-mono">PROFESSIONAL</td>
+                    <td class="py-3.5 px-5 font-mono font-semibold text-emerald-600">ACTIVE</td>
+                    <td class="py-3.5 px-5 font-mono text-neutral-400">1 hour</td>
+                    <td class="py-3.5 px-5 text-right font-medium">
+                      <span class="cursor-pointer hover:underline">View</span> ·
+                      <span class="cursor-pointer hover:underline">Edit</span> ·
+                      <span class="cursor-pointer text-rose-600 hover:underline">Block</span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-neutral-50">
+                    <td class="py-3.5 px-5 font-semibold text-neutral-900">Elena Rostova</td>
+                    <td class="py-3.5 px-5 font-mono text-neutral-500">e.rostova@nexus.ai</td>
+                    <td class="py-3.5 px-5 font-mono">STARTER</td>
+                    <td class="py-3.5 px-5 font-mono font-semibold text-amber-600">PENDING</td>
+                    <td class="py-3.5 px-5 font-mono text-neutral-400">2 days</td>
+                    <td class="py-3.5 px-5 text-right font-medium">
+                      <span class="cursor-pointer hover:underline">View</span> ·
+                      <span class="cursor-pointer hover:underline">Edit</span> ·
+                      <span class="cursor-pointer text-rose-600 hover:underline">Block</span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-neutral-50">
+                    <td class="py-3.5 px-5 font-semibold text-neutral-900">Alan Turing Institute</td>
+                    <td class="py-3.5 px-5 font-mono text-neutral-500">research@turing.ac.uk</td>
+                    <td class="py-3.5 px-5 font-mono">ENTERPRISE</td>
+                    <td class="py-3.5 px-5 font-mono font-semibold text-emerald-600">ACTIVE</td>
+                    <td class="py-3.5 px-5 font-mono text-neutral-400">Yesterday</td>
+                    <td class="py-3.5 px-5 text-right font-medium">
+                      <span class="cursor-pointer hover:underline">View</span> ·
+                      <span class="cursor-pointer hover:underline">Edit</span> ·
+                      <span class="cursor-pointer text-rose-600 hover:underline">Block</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. NEURAL MODELS VIEW -->
+        <div id="view-models" class="hidden flex-1 overflow-y-auto p-8 space-y-6">
+          <div>
+            <h2 class="text-xl font-bold tracking-tight text-neutral-900">Neural Models Workspace</h2>
+            <p class="text-xs text-neutral-500 mt-0.5">Model management workspace & performance telemetry.</p>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-3 rounded-lg border border-neutral-200 bg-white p-4 shadow-xs">
+              <div class="text-xs font-semibold uppercase text-neutral-400 mb-3">AVAILABLE MODELS</div>
+              <div class="space-y-2">
+                <button class="w-full text-left p-3 rounded-md text-xs border border-neutral-900 bg-neutral-100 font-bold">GPT-Nexus Core • ACTIVE</button>
+                <button class="w-full text-left p-3 rounded-md text-xs border border-neutral-200 text-neutral-600">BioNeuron Folding • ACTIVE</button>
+                <button class="w-full text-left p-3 rounded-md text-xs border border-neutral-200 text-neutral-600">QuantMind Engine • MAINT</button>
+                <button class="w-full text-left p-3 rounded-md text-xs border border-neutral-200 text-neutral-600">Nexus Legacy • INACTIVE</button>
+              </div>
+            </div>
+
+            <div class="lg:col-span-6 rounded-lg border border-neutral-200 bg-white p-6 shadow-xs flex flex-col justify-between">
+              <div>
+                <h3 class="text-xl font-bold text-neutral-900">GPT-Nexus Core</h3>
+                <p class="text-xs text-neutral-500 mt-1">Primary multi-modal intelligence reasoning engine.</p>
+                <div class="mt-6 p-5 rounded-md border border-neutral-200 bg-neutral-50 space-y-3 text-xs">
+                  <div class="text-[10px] font-semibold text-neutral-500 uppercase">CONFIGURATION OVERVIEW</div>
+                  <div class="flex justify-between">
+                    <span class="text-neutral-500">Context Window</span>
+                    <span class="font-mono font-medium">128,000 Tokens</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-neutral-500">Weights Version</span>
+                    <span class="font-mono font-medium">2026.09-Refined</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-neutral-500">Last Updated</span>
+                    <span class="font-mono font-medium">Today, 08:30 AM</span>
+                  </div>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3 mt-6">
+                <button onclick="alert('Live Telemetry: 1,840 tokens/sec · Latency 140ms · 99.9% Uptime')" class="py-2 px-3 text-xs font-semibold rounded border border-neutral-200 hover:bg-neutral-50">View Telemetry</button>
+                <button onclick="alert('Configure Parameters modal triggered')" class="py-2 px-3 text-xs font-semibold rounded bg-neutral-900 text-white">Configure Parameters</button>
+              </div>
+            </div>
+
+            <div class="lg:col-span-3 rounded-lg border border-neutral-200 bg-white p-4 shadow-xs space-y-4">
+              <div class="text-xs font-semibold uppercase text-neutral-400">MODEL PERFORMANCE</div>
+              <div class="p-4 rounded border border-neutral-200 bg-neutral-50">
+                <div class="text-[10px] text-neutral-400 uppercase">Daily Inferences</div>
+                <div class="text-2xl font-bold font-mono text-neutral-900 mt-1">3.2M</div>
+              </div>
+              <div class="p-4 rounded border border-neutral-200 bg-neutral-50">
+                <div class="text-[10px] text-neutral-400 uppercase">Inference Latency</div>
+                <div class="text-2xl font-bold font-mono text-neutral-900 mt-1">140ms</div>
+              </div>
+              <div class="p-4 rounded border border-neutral-200 bg-neutral-50">
+                <div class="text-[10px] text-neutral-400 uppercase">Cluster Health</div>
+                <div class="text-2xl font-bold font-mono text-emerald-600 mt-1">99.9%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. SUBSCRIPTIONS VIEW -->
+        <div id="view-subscriptions" class="hidden flex-1 overflow-y-auto p-8 space-y-6">
+          <div>
+            <h2 class="text-xl font-bold text-neutral-900">Subscriptions</h2>
+            <p class="text-xs text-neutral-500 mt-0.5">Subscription overview • plan distribution and billing cycle governance.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-6 rounded-lg border border-neutral-200 bg-white shadow-xs">
+              <h3 class="font-bold text-neutral-900">Starter Plan</h3>
+              <div class="text-2xl font-bold font-mono my-2">$0 / mo</div>
+              <div class="text-xs text-neutral-400">Total: 840 Users</div>
+            </div>
+            <div class="p-6 rounded-lg border border-neutral-200 bg-white shadow-xs">
+              <h3 class="font-bold text-neutral-900">Professional Research</h3>
+              <div class="text-2xl font-bold font-mono my-2">$49 / mo</div>
+              <div class="text-xs text-neutral-400">Total: 522 Users</div>
+            </div>
+            <div class="p-6 rounded-lg border border-neutral-200 bg-white shadow-xs">
+              <h3 class="font-bold text-neutral-900">Enterprise Node</h3>
+              <div class="text-2xl font-bold font-mono my-2">$299 / mo</div>
+              <div class="text-xs text-neutral-400">Total: 120 Nodes</div>
+            </div>
+          </div>
+
+          <div class="rounded-lg border border-neutral-200 bg-white shadow-xs overflow-hidden">
+            <div class="px-5 py-3 border-b border-neutral-200 text-xs font-semibold uppercase text-neutral-700">
+              SUBSCRIBER AUDIT REGISTRY
+            </div>
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="bg-neutral-50 border-b border-neutral-200 text-neutral-500 text-[11px]">
+                <tr>
+                  <th class="py-3 px-5">USER</th>
+                  <th class="py-3 px-5">PLAN</th>
+                  <th class="py-3 px-5">STATUS</th>
+                  <th class="py-3 px-5">START DATE</th>
+                  <th class="py-3 px-5">RENEWAL DATE</th>
+                  <th class="py-3 px-5 text-right">MONTHLY RATE</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-neutral-200">
+                <tr>
+                  <td class="py-3.5 px-5 font-sans font-semibold">Dr. Evelyn Vance</td>
+                  <td class="py-3.5 px-5">PROFESSIONAL</td>
+                  <td class="py-3.5 px-5 text-emerald-600 font-bold">ACTIVE</td>
+                  <td class="py-3.5 px-5 text-neutral-400">2024-09-01</td>
+                  <td class="py-3.5 px-5 text-neutral-400">2026-09-01</td>
+                  <td class="py-3.5 px-5 text-right font-bold">$49</td>
+                </tr>
+                <tr>
+                  <td class="py-3.5 px-5 font-sans font-semibold">Dr. Marcus Thorne</td>
+                  <td class="py-3.5 px-5">PROFESSIONAL</td>
+                  <td class="py-3.5 px-5 text-emerald-600 font-bold">ACTIVE</td>
+                  <td class="py-3.5 px-5 text-neutral-400">2025-01-15</td>
+                  <td class="py-3.5 px-5 text-neutral-400">2026-01-15</td>
+                  <td class="py-3.5 px-5 text-right font-bold">$49</td>
+                </tr>
+                <tr>
+                  <td class="py-3.5 px-5 font-sans font-semibold">Alan Turing Institute</td>
+                  <td class="py-3.5 px-5">ENTERPRISE</td>
+                  <td class="py-3.5 px-5 text-emerald-600 font-bold">ACTIVE</td>
+                  <td class="py-3.5 px-5 text-neutral-400">2024-06-10</td>
+                  <td class="py-3.5 px-5 text-neutral-400">2027-06-10</td>
+                  <td class="py-3.5 px-5 text-right font-bold">$299</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 5. ANALYTICS VIEW -->
+        <div id="view-analytics" class="hidden flex-1 overflow-y-auto p-8 space-y-6">
+          <div>
+            <h2 class="text-xl font-bold text-neutral-900">Analytics Workspace</h2>
+            <p class="text-xs text-neutral-500 mt-0.5">System reports • activity analysis, AI telemetry and downloadable audits.</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 rounded-lg border border-neutral-200 bg-white p-6 shadow-xs">
+              <div class="text-xs font-semibold uppercase text-neutral-700 mb-4">PRIMARY COMPUTE TELEMETRY</div>
+              <div class="h-60 relative">
+                <svg width="100%" height="100%" viewBox="0 0 600 220">
+                  <line x1="30" y1="50" x2="570" y2="50" stroke="#e2e8f0" stroke-dasharray="2,2"/>
+                  <line x1="30" y1="110" x2="570" y2="110" stroke="#e2e8f0" stroke-dasharray="2,2"/>
+                  <line x1="30" y1="170" x2="570" y2="170" stroke="#e2e8f0" stroke-dasharray="2,2"/>
+                  
+                  <path d="M 40 140 L 140 110 L 240 125 L 340 70 L 440 90 L 540 40" fill="none" stroke="#0f172a" stroke-width="2.5"/>
+                  
+                  <circle cx="40" cy="140" r="4" fill="#0284c7" stroke="#fff" stroke-width="2"/>
+                  <circle cx="140" cy="110" r="4" fill="#0284c7" stroke="#fff" stroke-width="2"/>
+                  <circle cx="240" cy="125" r="4" fill="#0284c7" stroke="#fff" stroke-width="2"/>
+                  <circle cx="340" cy="70" r="4" fill="#0284c7" stroke="#fff" stroke-width="2"/>
+                  <circle cx="440" cy="90" r="4" fill="#0284c7" stroke="#fff" stroke-width="2"/>
+                  <circle cx="540" cy="40" r="4" fill="#0284c7" stroke="#fff" stroke-width="2"/>
+
+                  <text x="40" y="210" font-size="10" font-family="monospace" fill="#94a3b8">Oct 12</text>
+                  <text x="140" y="210" font-size="10" font-family="monospace" fill="#94a3b8">Oct 17</text>
+                  <text x="240" y="210" font-size="10" font-family="monospace" fill="#94a3b8">Oct 22</text>
+                  <text x="340" y="210" font-size="10" font-family="monospace" fill="#94a3b8">Oct 27</text>
+                  <text x="440" y="210" font-size="10" font-family="monospace" fill="#94a3b8">Nov 01</text>
+                  <text x="540" y="210" font-size="10" font-family="monospace" fill="#94a3b8">Nov 06</text>
+                </svg>
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              <div class="p-6 rounded-lg border border-neutral-200 bg-white shadow-xs">
+                <div class="text-[10px] font-semibold text-neutral-400 uppercase">User Activity Index</div>
+                <div class="text-3xl font-bold font-mono text-neutral-900 my-2">94.8%</div>
+                <p class="text-xs text-neutral-400">Aggregated research sessions and hypothesis iterations.</p>
+              </div>
+              <div class="p-6 rounded-lg border border-neutral-200 bg-white shadow-xs">
+                <div class="text-[10px] font-semibold text-neutral-400 uppercase">AI Compute Efficiency</div>
+                <div class="text-3xl font-bold font-mono text-emerald-600 my-2">99.2%</div>
+                <p class="text-xs text-neutral-400">Zero pipeline starvation. Tensor allocation nominal.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-lg border border-neutral-200 bg-white shadow-xs flex justify-between items-center">
+            <div>
+              <div class="text-[10px] font-semibold uppercase text-neutral-400">GENERATED REPORTS REGISTRY</div>
+              <p class="text-xs text-neutral-600 mt-1">Download sanitized system logs, hardware telemetry metrics, and user activity records.</p>
+            </div>
+            <button onclick="downloadCSVReport()" class="px-4 py-2.5 text-xs font-semibold rounded bg-neutral-900 text-white hover:bg-neutral-800 shadow-xs">
+              Download CSV Report
+            </button>
+          </div>
+        </div>
+
+      </main>
+
+      <footer class="px-6 py-2 border-t border-neutral-200 bg-white flex items-center justify-between text-[11px] text-neutral-500">
+        <div>NEXUS AI — Intelligent Research Workspace & Admin Control</div>
+        <div class="font-mono">Web Technology (01CE1306) · Nirav Nimavat (92610103001)</div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    function switchAdminView(viewName) {
+      const views = ['dashboard', 'users', 'models', 'subscriptions', 'analytics'];
+      views.forEach(v => {
+        const el = document.getElementById('view-' + v);
+        const nav = document.getElementById('nav-' + v);
+        if (v === viewName) {
+          el.classList.remove('hidden');
+          nav.className = 'w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors bg-neutral-100 text-neutral-900 font-semibold';
+        } else {
+          el.classList.add('hidden');
+          nav.className = 'w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50';
+        }
+      });
+      const breadcrumb = {
+        dashboard: 'System Telemetry Dashboard',
+        users: 'User Governance Directory',
+        models: 'Neural Models Management',
+        subscriptions: 'Subscription & Plan Audit',
+        analytics: 'Analytics & Compute Telemetry'
+      }[viewName];
+      document.getElementById('header-breadcrumb').textContent = breadcrumb;
+    }
+
+    function simulateEvent() {
+      const stream = document.getElementById('activity-stream');
+      const item = document.createElement('div');
+      item.className = 'p-3.5 rounded-md border border-neutral-200 bg-neutral-50/50 flex justify-between text-xs';
+      item.innerHTML = '<span><strong>Neural Node Synced</strong> · Attractor Convergence</span><span class="text-neutral-400 font-mono text-[11px]">Just now</span>';
+      stream.insertBefore(item, stream.firstChild);
+    }
+
+    function downloadCSVReport() {
+      const csv = 'Date,ComputeLoad,TokensMillion,LatencyMs\\nOct 12,42%,2.1M,152ms\\nOct 17,56%,2.8M,146ms\\nOct 22,50%,2.5M,148ms\\nOct 27,72%,3.6M,139ms\\nNov 01,64%,3.1M,142ms\\nNov 06,85%,4.2M,135ms';
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Nexus_Compute_Telemetry.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      alert('CSV Telemetry Report Exported!');
+    }
+  </script>
+</body>
+</html>

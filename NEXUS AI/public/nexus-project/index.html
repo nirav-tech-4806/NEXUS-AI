@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS AI – Intelligent Research Workspace (HTML/CSS/JS)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-neutral-100/60 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 min-h-screen flex flex-col antialiased font-sans">
+
+  <!-- Main Viewport Layout -->
+  <div class="flex-1 flex overflow-hidden h-screen">
+    
+    <!-- Left Sidebar -->
+    <aside class="w-64 shrink-0 flex flex-col border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-neutral-800 select-none">
+      
+      <!-- Brand -->
+      <div class="px-6 py-5 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
+        <div>
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded bg-neutral-900 text-white flex items-center justify-center font-bold text-xs">
+              N
+            </div>
+            <h1 class="font-bold tracking-tight text-base uppercase">NEXUS AI</h1>
+          </div>
+          <p class="text-[11px] text-neutral-500 mt-1">Research Workspace</p>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <div class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+        <div class="space-y-1">
+          <div class="px-3 pb-2 text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">
+            Research Views
+          </div>
+          <button onclick="switchView('landscape')" id="nav-landscape" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors bg-neutral-100 text-neutral-900 font-semibold">
+            <span>●</span>
+            <span>Landscape</span>
+          </button>
+          <button onclick="switchView('thread')" id="nav-thread" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50">
+            <span>○</span>
+            <span>Evolving Thread</span>
+          </button>
+          <button onclick="switchView('systems')" id="nav-systems" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50">
+            <span>○</span>
+            <span>Connected Systems</span>
+          </button>
+          <button onclick="switchView('exploration')" id="nav-exploration" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50">
+            <span>○</span>
+            <span>Exploration</span>
+          </button>
+          <button onclick="switchView('tiers')" id="nav-tiers" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50">
+            <span>○</span>
+            <span>Tier Plan</span>
+          </button>
+        </div>
+
+        <!-- Auth Section -->
+        <div class="space-y-1 pt-2 border-t border-neutral-100">
+          <div class="px-3 pb-1 text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">
+            Authentication
+          </div>
+          <a href="auth.html" class="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 rounded hover:bg-neutral-50">
+            <span>→</span>
+            <span>Researcher Sign In</span>
+          </a>
+          <a href="auth.html" class="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 rounded hover:bg-neutral-50">
+            <span>+</span>
+            <span>Register Account</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Bottom Switcher -->
+      <div class="p-3 border-t border-neutral-200 bg-neutral-50/50">
+        <a href="admin.html" class="w-full flex items-center justify-between p-2.5 rounded border border-neutral-200 bg-white hover:border-neutral-400 text-xs shadow-xs">
+          <div>
+            <div class="font-semibold text-neutral-900">User / Admin</div>
+            <div class="text-[10px] text-neutral-500">Switch to Admin Control</div>
+          </div>
+          <span>→</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      
+      <!-- Top Header -->
+      <header class="h-14 px-6 border-b border-neutral-200 bg-white flex items-center justify-between gap-4 select-none">
+        <div class="flex items-center gap-3">
+          <span class="text-xs px-2.5 py-0.5 rounded font-mono font-medium bg-neutral-100 text-neutral-800">
+            Researcher Workspace
+          </span>
+          <span class="text-neutral-400 text-xs">/</span>
+          <span id="header-breadcrumb" class="text-xs font-semibold text-neutral-900">Knowledge Landscape</span>
+        </div>
+
+        <div class="flex items-center gap-3 text-xs">
+          <a href="auth.html" class="px-2.5 py-1 text-xs font-medium rounded border border-neutral-200 hover:bg-neutral-100">
+            Sign In / Register
+          </a>
+          <a href="admin.html" class="px-3 py-1 text-xs font-semibold rounded bg-neutral-900 text-white hover:bg-neutral-800">
+            Admin Portal →
+          </a>
+        </div>
+      </header>
+
+      <!-- Views Container -->
+      <main class="flex-1 overflow-hidden relative flex flex-col">
+        
+        <!-- 1. LANDSCAPE VIEW -->
+        <div id="view-landscape" class="flex-1 flex flex-col overflow-hidden">
+          <div class="px-8 py-5 border-b border-neutral-200 flex items-center justify-between bg-white">
+            <div>
+              <h2 class="text-xl font-bold tracking-tight text-neutral-900">Landscape</h2>
+              <p class="text-xs text-neutral-500 mt-0.5">Ideas and research points connected across disciplines.</p>
+            </div>
+          </div>
+
+          <div class="flex-1 flex overflow-hidden p-6 gap-6">
+            <!-- SVG Landscape Canvas -->
+            <div class="flex-1 rounded-lg border border-neutral-200 bg-neutral-50/50 flex flex-col overflow-hidden shadow-xs">
+              <div class="px-5 py-3 border-b border-neutral-200 bg-white/70 text-xs font-semibold uppercase tracking-wider text-neutral-700 flex justify-between">
+                <span>INFORMATION LANDSCAPE</span>
+                <span class="text-neutral-400 font-mono text-[11px]">Interactive SVG Graph</span>
+              </div>
+              <div class="flex-1 relative p-4">
+                <svg width="100%" height="100%" viewBox="0 0 700 420" class="w-full h-full">
+                  <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,2">
+                    <line x1="230" y1="180" x2="420" y2="110" stroke="#0284c7" stroke-width="2.5" stroke-dasharray="none"/>
+                    <line x1="420" y1="110" x2="540" y2="200"/>
+                    <line x1="230" y1="180" x2="540" y2="200"/>
+                    <line x1="230" y1="180" x2="320" y2="330"/>
+                    <line x1="320" y1="330" x2="480" y2="340"/>
+                    <line x1="230" y1="180" x2="480" y2="340"/>
+                    <line x1="540" y1="200" x2="480" y2="340"/>
+                  </g>
+                  <!-- Node Circles -->
+                  <g class="cursor-pointer">
+                    <circle cx="420" cy="110" r="26" fill="#ffffff" stroke="#475569" stroke-width="2" onclick="selectNode('Nexus Core', 'Central Controller v4.2', 'Core', '4 nodes')"/>
+                    <text x="420" y="145" text-anchor="middle" font-size="12" font-weight="500" fill="#334155">Nexus Core</text>
+
+                    <circle cx="230" cy="180" r="24" fill="#0284c7" stroke="#0369a1" stroke-width="2" onclick="selectNode('Quantum Cognition', 'Nexus Core', 'Idea', '4 nodes')"/>
+                    <text x="230" y="215" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Quantum Cognition</text>
+
+                    <circle cx="540" cy="200" r="22" fill="#ffffff" stroke="#475569" stroke-width="2" onclick="selectNode('Project Aether', 'GPT-Nexus Core', 'Project', '3 nodes')"/>
+                    <text x="540" y="235" text-anchor="middle" font-size="12" font-weight="500" fill="#334155">Project Aether</text>
+
+                    <circle cx="320" cy="330" r="22" fill="#ffffff" stroke="#475569" stroke-width="2" onclick="selectNode('Researcher', 'Human-in-the-Loop', 'Agent', '3 nodes')"/>
+                    <text x="320" y="365" text-anchor="middle" font-size="12" font-weight="500" fill="#334155">Researcher</text>
+
+                    <circle cx="480" cy="340" r="22" fill="#ffffff" stroke="#475569" stroke-width="2" onclick="selectNode('Genomic Data', 'BioNeuron V4', 'Dataset', '3 nodes')"/>
+                    <text x="480" y="375" text-anchor="middle" font-size="12" font-weight="500" fill="#334155">Genomic Data</text>
+                  </g>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Inspector -->
+            <div class="w-80 rounded-lg border border-neutral-200 bg-white p-6 shadow-xs flex flex-col justify-between">
+              <div>
+                <div class="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">SELECTED ENTITY</div>
+                <h3 id="node-name" class="text-lg font-bold text-neutral-900">Quantum Cognition</h3>
+                <p id="node-desc" class="text-xs text-neutral-500 mt-1">Non-classical probabilistic state mapping for continuous decision pathways and memory retrieval.</p>
+
+                <div class="mt-6 border border-neutral-200 rounded text-xs divide-y divide-neutral-100">
+                  <div class="flex justify-between px-3 py-2.5">
+                    <span class="text-neutral-500">Type</span>
+                    <span id="node-type" class="font-mono font-medium">Idea</span>
+                  </div>
+                  <div class="flex justify-between px-3 py-2.5">
+                    <span class="text-neutral-500">Inference</span>
+                    <span id="node-inference" class="font-mono font-medium">Nexus Core</span>
+                  </div>
+                  <div class="flex justify-between px-3 py-2.5">
+                    <span class="text-neutral-500">Linked</span>
+                    <span id="node-linked" class="font-mono font-medium">4 nodes</span>
+                  </div>
+                  <div class="flex justify-between px-3 py-2.5">
+                    <span class="text-neutral-500">Updated</span>
+                    <span class="font-mono font-medium">Today</span>
+                  </div>
+                </div>
+              </div>
+
+              <button onclick="switchView('thread')" class="w-full py-2.5 px-4 text-xs font-semibold rounded bg-neutral-900 text-white hover:bg-neutral-800 shadow-xs mt-6">
+                Open Thought Stream →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. EVOLVING THREAD VIEW -->
+        <div id="view-thread" class="hidden flex-1 flex flex-col overflow-hidden">
+          <div class="px-8 py-5 border-b border-neutral-200 bg-white">
+            <h2 class="text-xl font-bold tracking-tight text-neutral-900">Evolving Thread</h2>
+            <p class="text-xs text-neutral-500 mt-0.5">Continuous thought evolution and hypothesis development.</p>
+          </div>
+
+          <div class="flex-1 flex overflow-hidden p-6 gap-6">
+            <!-- Thought Streams -->
+            <div class="w-64 rounded-lg border border-neutral-200 bg-white p-4 shadow-xs flex flex-col">
+              <div class="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">THOUGHT STREAMS</div>
+              <div class="space-y-2">
+                <button class="w-full text-left p-3 rounded-md text-xs border border-neutral-900 bg-neutral-100 font-semibold text-neutral-900">Quantum Cognition</button>
+                <button class="w-full text-left p-3 rounded-md text-xs border border-neutral-200 text-neutral-600 hover:border-neutral-400">BioNeuron Folding</button>
+                <button class="w-full text-left p-3 rounded-md text-xs border border-neutral-200 text-neutral-600 hover:border-neutral-400">Aether Pipeline</button>
+              </div>
+            </div>
+
+            <!-- Topic Stream -->
+            <div class="flex-1 rounded-lg border border-neutral-200 bg-white flex flex-col overflow-hidden shadow-xs">
+              <div class="px-6 py-3 border-b border-neutral-200 text-xs font-semibold flex justify-between">
+                <span>TOPIC STREAM · Quantum Cognition</span>
+                <span class="text-neutral-400 font-mono">Model: NEXUS Core 4.2</span>
+              </div>
+              <div class="flex-1 overflow-y-auto p-6 space-y-6">
+                <div class="pl-6 relative border-l-2 border-neutral-200 space-y-6" id="thread-steps">
+                  <div>
+                    <div class="text-[11px] font-mono font-bold text-neutral-500">STEP 01 · Seed Hypothesis</div>
+                    <div class="p-3.5 rounded-md border border-neutral-100 bg-neutral-50 text-xs text-neutral-700 mt-1">
+                      Can non-linear transitions correlate with genomic data?
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-[11px] font-mono font-bold text-neutral-500">STEP 02 · Attractor Synthesis</div>
+                    <div class="p-3.5 rounded-md border border-neutral-100 bg-neutral-50 text-xs text-neutral-700 mt-1">
+                      Structural similarity found across state distributions.
+                    </div>
+                  </div>
+                  <div>
+                    <div class="text-[11px] font-mono font-bold text-neutral-500">STEP 03 · Evolved Intelligence</div>
+                    <div class="p-3.5 rounded-md border border-neutral-100 bg-neutral-50 text-xs text-neutral-700 mt-1">
+                      Memory retrieval follows continuous state.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-4 border-t border-neutral-200 bg-neutral-50/60">
+                <form onsubmit="handleEvolveThread(event)" class="flex gap-2">
+                  <input type="text" id="thread-input" placeholder="Inquire further to evolve this thread..." class="flex-1 px-4 py-2.5 text-xs rounded border border-neutral-200 bg-white outline-none">
+                  <button type="submit" class="px-4 py-2 text-xs font-semibold rounded bg-neutral-900 text-white">Evolve</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Active Intelligence -->
+            <div class="w-72 rounded-lg border border-neutral-200 bg-white p-6 shadow-xs flex flex-col justify-between">
+              <div>
+                <div class="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">ACTIVE INTELLIGENCE</div>
+                <h3 class="text-base font-bold text-neutral-900">NEXUS Core 4.2</h3>
+                <div class="mt-6 border border-neutral-200 rounded text-xs divide-y divide-neutral-100">
+                  <div class="flex justify-between px-3.5 py-3">
+                    <span class="text-neutral-500">Relational Dependency</span>
+                    <span class="font-mono font-bold">94.2%</span>
+                  </div>
+                  <div class="flex justify-between px-3.5 py-3">
+                    <span class="text-neutral-500">Project</span>
+                    <span class="font-mono">Aether</span>
+                  </div>
+                  <div class="flex justify-between px-3.5 py-3">
+                    <span class="text-neutral-500">State</span>
+                    <span class="font-mono font-semibold text-emerald-600">Active</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. CONNECTED SYSTEMS VIEW -->
+        <div id="view-systems" class="hidden flex-1 flex flex-col overflow-hidden">
+          <div class="px-8 py-5 border-b border-neutral-200 bg-white">
+            <h2 class="text-xl font-bold tracking-tight text-neutral-900">Connected Systems</h2>
+            <p class="text-xs text-neutral-500 mt-0.5">Relational information map — ideas, projects, people and data.</p>
+          </div>
+          <div class="flex-1 flex overflow-hidden p-6 gap-6">
+            <div class="flex-1 rounded-lg border border-neutral-200 bg-neutral-50/50 flex flex-col overflow-hidden p-4">
+              <div class="text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-2">INFORMATION MAP TOPOLOGY</div>
+              <svg width="100%" height="100%" viewBox="0 0 600 340">
+                <g stroke="#2563eb" stroke-width="2" stroke-dasharray="3,3">
+                  <line x1="200" y1="180" x2="380" y2="100"/>
+                  <line x1="200" y1="180" x2="260" y2="280"/>
+                  <line x1="380" y1="100" x2="480" y2="240"/>
+                  <line x1="260" y1="280" x2="480" y2="240"/>
+                </g>
+                <circle cx="200" cy="180" r="24" fill="#2563eb" stroke="#1d4ed8" stroke-width="2"/>
+                <text x="200" y="215" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Nexus Neural Core</text>
+                <circle cx="380" cy="100" r="20" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+                <text x="380" y="130" text-anchor="middle" font-size="12" fill="#334155">Aether Synthesis</text>
+                <circle cx="480" cy="240" r="20" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+                <text x="480" y="270" text-anchor="middle" font-size="12" fill="#334155">Genomic Matrix</text>
+                <circle cx="260" cy="280" r="20" fill="#ffffff" stroke="#475569" stroke-width="2"/>
+                <text x="260" y="310" text-anchor="middle" font-size="12" fill="#334155">Researcher</text>
+              </svg>
+            </div>
+            <div class="w-80 rounded-lg border border-neutral-200 bg-white p-6 shadow-xs flex flex-col justify-between">
+              <div>
+                <div class="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">SYSTEM NODE INSPECTOR</div>
+                <h3 class="text-lg font-bold text-neutral-900">Nexus Neural Core</h3>
+                <div class="mt-4 pt-3 border-t border-neutral-100">
+                  <div class="text-[10px] font-semibold text-neutral-400">RELATIONAL DENSITY</div>
+                  <div class="text-xl font-bold font-mono text-neutral-900 mt-1">14 linked nodes</div>
+                </div>
+                <div class="mt-6">
+                  <div class="text-[10px] font-semibold text-neutral-400 mb-2">CORRELATED WORKSPACES</div>
+                  <div class="space-y-2">
+                    <button class="w-full text-left p-2.5 rounded border border-neutral-200 text-xs font-medium bg-neutral-50">Project Aether</button>
+                    <button class="w-full text-left p-2.5 rounded border border-neutral-200 text-xs font-medium">BioNeuron V4</button>
+                    <button class="w-full text-left p-2.5 rounded border border-neutral-200 text-xs font-medium">Topological Convergence</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. EXPLORATION VIEW -->
+        <div id="view-exploration" class="hidden flex-1 overflow-y-auto p-8 space-y-6">
+          <div class="p-6 rounded-lg border border-neutral-200 bg-white shadow-xs">
+            <div class="text-[10px] font-semibold uppercase text-neutral-400 mb-1">FEATURED PRINCIPLE</div>
+            <h3 class="text-xl font-bold text-neutral-900">Designing intelligence around human thinking.</h3>
+            <p class="text-xs text-neutral-500 mt-1">Featured research, connected ideas and active pipelines.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="rounded-lg border border-neutral-200 bg-white p-5 shadow-xs">
+              <div class="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">DEEP RESEARCH</div>
+              <div class="space-y-3">
+                <div class="p-3.5 rounded border border-neutral-200 bg-neutral-50/50 text-xs">
+                  <h4 class="font-bold text-neutral-900">Genomic Pattern Topology</h4>
+                  <p class="text-[11px] text-neutral-500 mt-1">Topological analysis of non-linear conformational manifolds.</p>
+                </div>
+                <div class="p-3.5 rounded border border-neutral-200 bg-neutral-50/50 text-xs">
+                  <h4 class="font-bold text-neutral-900">BioNeuron Folding V4</h4>
+                  <p class="text-[11px] text-neutral-500 mt-1">Synaptic fold transitions using transformer field estimators.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-lg border border-neutral-200 bg-white p-5 shadow-xs">
+              <div class="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">ACTIVE PROJECTS</div>
+              <div class="space-y-3">
+                <div class="p-3.5 rounded border border-neutral-200 bg-neutral-50/50 text-xs">
+                  <h4 class="font-bold text-neutral-900">Project Aether Pipeline</h4>
+                  <p class="text-[11px] text-neutral-500 mt-1">Continuous synthesis harmonizing quantum cognitive vectors.</p>
+                </div>
+                <div class="p-3.5 rounded border border-neutral-200 bg-neutral-50/50 text-xs">
+                  <h4 class="font-bold text-neutral-900">Attractor Basin Dynamics</h4>
+                  <p class="text-[11px] text-neutral-500 mt-1">Chaotic attractor basins governing neuro-symbolic reasoning.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-lg border border-neutral-200 bg-white p-5 shadow-xs">
+              <div class="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">PEOPLE NODES</div>
+              <div class="space-y-3">
+                <div class="p-3.5 rounded border border-neutral-200 bg-neutral-50/50 text-xs">
+                  <h4 class="font-bold text-neutral-900">Dr. Marcus Thorne</h4>
+                  <p class="text-[11px] text-neutral-500 mt-1">Lead Fellow in Bio-Computational Systems.</p>
+                </div>
+                <div class="p-3.5 rounded border border-neutral-200 bg-neutral-50/50 text-xs">
+                  <h4 class="font-bold text-neutral-900">Elena Rostova</h4>
+                  <p class="text-[11px] text-neutral-500 mt-1">Senior Research Engineer in High-dimensional Manifolds.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. TIER PLAN VIEW -->
+        <div id="view-tiers" class="hidden flex-1 overflow-y-auto p-8 max-w-6xl">
+          <div class="mb-6">
+            <h2 class="text-xl font-bold text-neutral-900">Tier Plan</h2>
+            <p class="text-xs text-neutral-500 mt-0.5">Intelligence capacity and compute allocation for the research workspace.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="rounded-lg border border-neutral-200 bg-white p-6 shadow-xs flex flex-col justify-between">
+              <div>
+                <div class="text-[10px] font-semibold text-neutral-400 uppercase">TIER</div>
+                <h3 class="text-lg font-bold text-neutral-900">Starter Plan</h3>
+                <div class="text-3xl font-extrabold font-mono mt-3 text-neutral-900">$0 / mo</div>
+                <div class="mt-6 pt-4 border-t border-neutral-100 space-y-2 text-xs text-neutral-700">
+                  <div>✓ 1 Active Landscape Canvas</div>
+                  <div>✓ 50 Thread Messages/day</div>
+                  <div>✓ Basic Model Access</div>
+                </div>
+              </div>
+              <button class="mt-8 w-full py-2.5 rounded border border-neutral-200 text-xs font-semibold">Select Starter</button>
+            </div>
+
+            <div class="rounded-lg border-2 border-neutral-900 bg-white p-6 shadow-md flex flex-col justify-between">
+              <div>
+                <div class="text-[10px] font-semibold text-neutral-400 uppercase">TIER</div>
+                <h3 class="text-lg font-bold text-neutral-900">Professional Research</h3>
+                <div class="text-3xl font-extrabold font-mono mt-3 text-neutral-900">$49 / mo</div>
+                <div class="mt-6 pt-4 border-t border-neutral-100 space-y-2 text-xs text-neutral-700">
+                  <div>✓ Unlimited Canvases</div>
+                  <div>✓ Unlimited Threads</div>
+                  <div>✓ Full Model Suite</div>
+                  <div>✓ Priority Compute</div>
+                </div>
+              </div>
+              <button class="mt-8 w-full py-2.5 rounded bg-neutral-900 text-white text-xs font-semibold">Current Plan</button>
+            </div>
+
+            <div class="rounded-lg border border-neutral-200 bg-white p-6 shadow-xs flex flex-col justify-between">
+              <div>
+                <div class="text-[10px] font-semibold text-neutral-400 uppercase">TIER</div>
+                <h3 class="text-lg font-bold text-neutral-900">Enterprise Node</h3>
+                <div class="text-3xl font-extrabold font-mono mt-3 text-neutral-900">$299 / mo</div>
+                <div class="mt-6 pt-4 border-t border-neutral-100 space-y-2 text-xs text-neutral-700">
+                  <div>✓ Private Nodes</div>
+                  <div>✓ Custom Model Fine-Tuning</div>
+                  <div>✓ Dedicated Admin Portal</div>
+                </div>
+              </div>
+              <button class="mt-8 w-full py-2.5 rounded border border-neutral-200 text-xs font-semibold">Select Enterprise</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- Footer -->
+      <footer class="px-6 py-2 border-t border-neutral-200 bg-white flex items-center justify-between text-[11px] text-neutral-500">
+        <div>NEXUS AI — Intelligent Research Workspace & Admin Control</div>
+        <div class="font-mono">Web Technology (01CE1306) · Nirav Nimavat (92610103001)</div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    function switchView(viewName) {
+      const views = ['landscape', 'thread', 'systems', 'exploration', 'tiers'];
+      views.forEach(v => {
+        const el = document.getElementById('view-' + v);
+        const nav = document.getElementById('nav-' + v);
+        if (v === viewName) {
+          el.classList.remove('hidden');
+          el.classList.add('flex');
+          nav.className = 'w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors bg-neutral-100 text-neutral-900 font-semibold';
+        } else {
+          el.classList.add('hidden');
+          el.classList.remove('flex');
+          nav.className = 'w-full flex items-center gap-2.5 px-3 py-2 text-xs rounded transition-colors text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50';
+        }
+      });
+      const breadcrumb = {
+        landscape: 'Knowledge Landscape',
+        thread: 'Evolving Thought Streams',
+        systems: 'Connected Systems Topology',
+        exploration: 'Discovery & Exploration',
+        tiers: 'Intelligence Tier Plan'
+      }[viewName];
+      document.getElementById('header-breadcrumb').textContent = breadcrumb;
+    }
+
+    function selectNode(name, inference, type, linked) {
+      document.getElementById('node-name').textContent = name;
+      document.getElementById('node-inference').textContent = inference;
+      document.getElementById('node-type').textContent = type;
+      document.getElementById('node-linked').textContent = linked;
+    }
+
+    function handleEvolveThread(e) {
+      e.preventDefault();
+      const input = document.getElementById('thread-input');
+      const val = input.value.trim();
+      if (!val) return;
+      const steps = document.getElementById('thread-steps');
+      const stepNum = steps.children.length + 1;
+      const padded = stepNum < 10 ? '0' + stepNum : stepNum;
+      
+      const newStep = document.createElement('div');
+      newStep.innerHTML = '<div class="text-[11px] font-mono font-bold text-neutral-500">STEP ' + padded + ' · Dynamic Hypothesis</div>' +
+        '<div class="p-3.5 rounded-md border border-neutral-100 bg-neutral-50 text-xs text-neutral-700 mt-1">' +
+        'Analysis of "' + val + '": Verified continuous attractor stability with 95.8% confidence.</div>';
+      steps.appendChild(newStep);
+      input.value = '';
+    }
+  </script>
+</body>
+</html>

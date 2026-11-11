@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS AI – Authentication Portal (Client & Admin)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 min-h-screen flex flex-col justify-center items-center p-6 antialiased font-sans">
+
+  <!-- Top bar link back to app -->
+  <div class="fixed top-6 left-6 flex items-center gap-4 text-xs">
+    <a href="index.html" class="flex items-center gap-1.5 text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
+      ← Back to Researcher Workspace
+    </a>
+    <span class="text-neutral-300">|</span>
+    <a href="admin.html" class="text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
+      Go to Admin Control →
+    </a>
+  </div>
+
+  <!-- Main Auth Card -->
+  <div class="w-full max-w-xl rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-8 shadow-sm">
+    
+    <!-- Brand / Title -->
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center gap-2 mb-2">
+        <div id="brand-badge" class="w-7 h-7 rounded bg-neutral-900 text-white flex items-center justify-center font-bold text-xs transition-colors">
+          N
+        </div>
+        <h1 id="brand-title" class="text-xl font-bold tracking-tight uppercase">
+          NEXUS RESEARCH
+        </h1>
+      </div>
+      <p id="brand-desc" class="text-xs text-neutral-500">
+        Continuous Intelligence & Hypothesis Development Workspace
+      </p>
+    </div>
+
+    <!-- Portal Switcher: Researcher vs Admin -->
+    <div class="mb-6 p-1 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex text-xs">
+      <button type="button" id="tab-client" class="flex-1 py-2 rounded-md font-semibold bg-white dark:bg-neutral-900 text-neutral-900 dark:text-white shadow-xs transition-all">
+        Researcher / Client Portal
+      </button>
+      <button type="button" id="tab-admin" class="flex-1 py-2 rounded-md font-semibold text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 transition-all">
+        System Admin Portal
+      </button>
+    </div>
+
+    <!-- Mode Switcher: Sign In vs Sign Up -->
+    <div class="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-3 mb-6">
+      <div>
+        <h2 id="mode-title" class="text-base font-bold text-neutral-900">Sign In to Workspace</h2>
+        <p class="text-[11px] text-neutral-500">Enter your credentials with client-side JavaScript validation.</p>
+      </div>
+      <div class="flex gap-1">
+        <button type="button" id="btn-login-mode" class="px-3 py-1 text-xs rounded font-semibold bg-neutral-900 text-white transition-colors">
+          Sign In
+        </button>
+        <button type="button" id="btn-signup-mode" class="px-3 py-1 text-xs rounded text-neutral-500 hover:text-neutral-900 transition-colors">
+          Sign Up
+        </button>
+      </div>
+    </div>
+
+    <!-- Alert Box -->
+    <div id="alert-box" class="hidden mb-6 p-3.5 rounded-lg text-xs flex items-center gap-2"></div>
+
+    <!-- Main Validation Form -->
+    <form id="auth-form" novalidate class="space-y-4 text-xs">
+      
+      <!-- Full Name (Signup Only) -->
+      <div id="group-fullname" class="hidden">
+        <label class="block font-medium text-neutral-700 mb-1">
+          Full Name <span class="text-rose-500">*</span>
+        </label>
+        <input type="text" id="fullname" placeholder="e.g. Dr. Nirav Nimavat" class="w-full px-3 py-2 rounded border border-neutral-300 bg-transparent outline-none focus:border-neutral-900 transition-colors">
+        <p id="error-fullname" class="hidden text-[11px] text-rose-500 mt-1"></p>
+      </div>
+
+      <!-- Phone Number (Signup Only) - RULE 1 -->
+      <div id="group-phone" class="hidden">
+        <div class="flex justify-between items-center mb-1">
+          <label class="font-medium text-neutral-700">
+            Phone Number <span class="text-rose-500">*</span>
+          </label>
+          <span class="text-[10px] text-neutral-400 font-mono">10–14 digits (e.g. +1234567890)</span>
+        </div>
+        <input type="tel" id="phone" placeholder="+1234567890 or 9876543210" class="w-full px-3 py-2 rounded border border-neutral-300 bg-transparent outline-none font-mono focus:border-neutral-900 transition-colors">
+        <p id="error-phone" class="hidden text-[11px] text-rose-500 mt-1"></p>
+      </div>
+
+      <!-- Email Address - RULE 3 & 5 -->
+      <div>
+        <label class="block font-medium text-neutral-700 mb-1">
+          Email Address <span class="text-rose-500">*</span>
+        </label>
+        <input type="email" id="email" placeholder="name@domain.com" class="w-full px-3 py-2 rounded border border-neutral-300 bg-transparent outline-none font-mono focus:border-neutral-900 transition-colors">
+        <p id="error-email" class="hidden text-[11px] text-rose-500 mt-1"></p>
+      </div>
+
+      <!-- Password - RULE 2, 4 & 5 -->
+      <div>
+        <div class="flex justify-between items-center mb-1">
+          <label class="font-medium text-neutral-700">
+            Password <span class="text-rose-500">*</span>
+          </label>
+          <span class="text-[10px] text-neutral-400 font-mono">Min 8 characters</span>
+        </div>
+        <input type="password" id="password" placeholder="••••••••••••" class="w-full px-3 py-2 rounded border border-neutral-300 bg-transparent outline-none font-mono focus:border-neutral-900 transition-colors">
+        <p id="error-password" class="hidden text-[11px] text-rose-500 mt-1"></p>
+
+        <!-- Live Password Rules Indicators (for Sign Up) -->
+        <div id="password-checklist" class="hidden mt-2.5 p-2.5 rounded bg-neutral-50 border border-neutral-200 grid grid-cols-2 gap-1.5 text-[10px] font-mono">
+          <div id="rule-len" class="text-neutral-400 flex items-center gap-1.5">● Min 8 characters</div>
+          <div id="rule-upper" class="text-neutral-400 flex items-center gap-1.5">● 1 Uppercase (A-Z)</div>
+          <div id="rule-lower" class="text-neutral-400 flex items-center gap-1.5">● 1 Lowercase (a-z)</div>
+          <div id="rule-sym" class="text-neutral-400 flex items-center gap-1.5">● Number & Special (!@#)</div>
+        </div>
+      </div>
+
+      <!-- Confirm Password (Signup Only) -->
+      <div id="group-confirm" class="hidden">
+        <label class="block font-medium text-neutral-700 mb-1">
+          Confirm Password <span class="text-rose-500">*</span>
+        </label>
+        <input type="password" id="confirmPassword" placeholder="••••••••••••" class="w-full px-3 py-2 rounded border border-neutral-300 bg-transparent outline-none font-mono focus:border-neutral-900 transition-colors">
+        <p id="error-confirm" class="hidden text-[11px] text-rose-500 mt-1"></p>
+      </div>
+
+      <!-- Admin Security Code (Admin Signup Only) -->
+      <div id="group-admincode" class="hidden">
+        <div class="flex justify-between items-center mb-1">
+          <label class="font-medium text-neutral-700">
+            Admin Authorization Security Key <span class="text-rose-500">*</span>
+          </label>
+          <span class="text-[10px] text-neutral-400 font-mono">e.g. NX-ROOT-92610</span>
+        </div>
+        <input type="text" id="adminCode" placeholder="NX-ROOT-92610" class="w-full px-3 py-2 rounded border border-neutral-300 bg-transparent outline-none font-mono focus:border-neutral-900 transition-colors">
+        <p id="error-admincode" class="hidden text-[11px] text-rose-500 mt-1"></p>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="pt-3">
+        <button type="submit" id="submit-btn" class="w-full py-2.5 px-4 rounded text-xs font-semibold bg-neutral-900 hover:bg-neutral-800 text-white flex items-center justify-center gap-2 shadow-sm transition-all">
+          <span>Authenticate & Enter Workspace</span>
+          <span>→</span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Active Validation Enforced Box -->
+    <div class="mt-6 pt-5 border-t border-neutral-200">
+      <div class="text-[11px] text-neutral-500 mb-2 font-medium">
+        JavaScript Form Validation Rules (01CE1306):
+      </div>
+      <div class="text-[10px] text-neutral-500 space-y-1 font-mono">
+        <div>1. Phone number pattern: (/^\+?[0-9]{10,14}$/)</div>
+        <div>2. Password pattern: Upper + Lower + Number + Special</div>
+        <div>3. Email pattern: (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)</div>
+        <div>4. Password length: Minimum 8 characters</div>
+        <div>5. All fields are required</div>
+      </div>
+
+      <!-- Test Autofill -->
+      <div class="mt-4 pt-3 border-t border-neutral-100 flex flex-wrap items-center gap-2">
+        <span class="text-[11px] text-neutral-400">Autofill Test Data:</span>
+        <button type="button" id="btn-fill-researcher" class="text-[10px] px-2 py-1 rounded border border-neutral-200 hover:bg-neutral-100">
+          Researcher Sign In
+        </button>
+        <button type="button" id="btn-fill-admin" class="text-[10px] px-2 py-1 rounded border border-neutral-200 hover:bg-neutral-100">
+          Admin Sign In
+        </button>
+        <button type="button" id="btn-fill-signup" class="text-[10px] px-2 py-1 rounded border border-neutral-200 hover:bg-neutral-100">
+          Valid Sign Up Form
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Pure JavaScript Validation Script -->
+  <script src="validation.js"></script>
+
+  <!-- Interactive Script for Form Behaviors -->
+  <script>
+    let currentPortal = 'client';
+    let isSignUp = false;
+
+    const tabClient = document.getElementById('tab-client');
+    const tabAdmin = document.getElementById('tab-admin');
+    const btnLoginMode = document.getElementById('btn-login-mode');
+    const btnSignupMode = document.getElementById('btn-signup-mode');
+
+    const brandBadge = document.getElementById('brand-badge');
+    const brandTitle = document.getElementById('brand-title');
+    const brandDesc = document.getElementById('brand-desc');
+    const modeTitle = document.getElementById('mode-title');
+    const submitBtn = document.getElementById('submit-btn');
+
+    const groupFullName = document.getElementById('group-fullname');
+    const groupPhone = document.getElementById('group-phone');
+    const groupConfirm = document.getElementById('group-confirm');
+    const groupAdminCode = document.getElementById('group-admincode');
+    const passChecklist = document.getElementById('password-checklist');
+
+    function syncUI() {
+      // Portal styling
+      if (currentPortal === 'admin') {
+        brandBadge.textContent = 'A';
+        brandBadge.className = 'w-7 h-7 rounded bg-amber-600 text-white flex items-center justify-center font-bold text-xs';
+        brandTitle.textContent = 'NEXUS ADMIN CONTROL';
+        brandDesc.textContent = 'Autonomous Infrastructure Governance & Telemetry Portal';
+        tabAdmin.className = 'flex-1 py-2 rounded-md font-semibold bg-white text-amber-600 shadow-xs transition-all';
+        tabClient.className = 'flex-1 py-2 rounded-md font-semibold text-neutral-600 hover:text-neutral-900 transition-all';
+        submitBtn.className = 'w-full py-2.5 px-4 rounded text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white flex items-center justify-center gap-2 shadow-sm transition-all';
+      } else {
+        brandBadge.textContent = 'N';
+        brandBadge.className = 'w-7 h-7 rounded bg-neutral-900 text-white flex items-center justify-center font-bold text-xs';
+        brandTitle.textContent = 'NEXUS RESEARCH';
+        brandDesc.textContent = 'Continuous Intelligence & Hypothesis Development Workspace';
+        tabClient.className = 'flex-1 py-2 rounded-md font-semibold bg-white text-neutral-900 shadow-xs transition-all';
+        tabAdmin.className = 'flex-1 py-2 rounded-md font-semibold text-neutral-600 hover:text-neutral-900 transition-all';
+        submitBtn.className = 'w-full py-2.5 px-4 rounded text-xs font-semibold bg-neutral-900 hover:bg-neutral-800 text-white flex items-center justify-center gap-2 shadow-sm transition-all';
+      }
+
+      // Mode styling
+      if (isSignUp) {
+        modeTitle.textContent = 'Create ' + (currentPortal === 'admin' ? 'Admin' : 'Research') + ' Account';
+        btnSignupMode.className = 'px-3 py-1 text-xs rounded font-semibold bg-neutral-900 text-white transition-colors';
+        btnLoginMode.className = 'px-3 py-1 text-xs rounded text-neutral-500 hover:text-neutral-900 transition-colors';
+        groupFullName.classList.remove('hidden');
+        groupPhone.classList.remove('hidden');
+        groupConfirm.classList.remove('hidden');
+        passChecklist.classList.remove('hidden');
+        submitBtn.innerHTML = '<span>Register & Enter ' + (currentPortal === 'admin' ? 'Admin Portal' : 'Workspace') + '</span><span>→</span>';
+
+        if (currentPortal === 'admin') {
+          groupAdminCode.classList.remove('hidden');
+        } else {
+          groupAdminCode.classList.add('hidden');
+        }
+      } else {
+        modeTitle.textContent = 'Sign In to ' + (currentPortal === 'admin' ? 'Admin Control' : 'Workspace');
+        btnLoginMode.className = 'px-3 py-1 text-xs rounded font-semibold bg-neutral-900 text-white transition-colors';
+        btnSignupMode.className = 'px-3 py-1 text-xs rounded text-neutral-500 hover:text-neutral-900 transition-colors';
+        groupFullName.classList.add('hidden');
+        groupPhone.classList.add('hidden');
+        groupConfirm.classList.add('hidden');
+        groupAdminCode.classList.add('hidden');
+        passChecklist.classList.add('hidden');
+        submitBtn.innerHTML = '<span>Authenticate & Enter ' + (currentPortal === 'admin' ? 'Admin Portal' : 'Workspace') + '</span><span>→</span>';
+      }
+    }
+
+    tabClient.onclick = () => { currentPortal = 'client'; syncUI(); };
+    tabAdmin.onclick = () => { currentPortal = 'admin'; syncUI(); };
+    btnLoginMode.onclick = () => { isSignUp = false; syncUI(); };
+    btnSignupMode.onclick = () => { isSignUp = true; syncUI(); };
+
+    // Real-time password checklist updates
+    document.getElementById('password').addEventListener('input', function(e) {
+      const val = e.target.value;
+      document.getElementById('rule-len').className = val.length >= 8 ? 'text-emerald-600 flex items-center gap-1.5' : 'text-neutral-400 flex items-center gap-1.5';
+      document.getElementById('rule-upper').className = /[A-Z]/.test(val) ? 'text-emerald-600 flex items-center gap-1.5' : 'text-neutral-400 flex items-center gap-1.5';
+      document.getElementById('rule-lower').className = /[a-z]/.test(val) ? 'text-emerald-600 flex items-center gap-1.5' : 'text-neutral-400 flex items-center gap-1.5';
+      document.getElementById('rule-sym').className = (/[0-9]/.test(val) && /[!@#$%^&*(),.?":{}|<>_~-]/.test(val)) ? 'text-emerald-600 flex items-center gap-1.5' : 'text-neutral-400 flex items-center gap-1.5';
+    });
+
+    // Form Submit Handler
+    document.getElementById('auth-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      let hasError = false;
+
+      // Helper to show/hide errors
+      function check(fieldId, errorId, validatorFn, ...args) {
+        const input = document.getElementById(fieldId);
+        const errEl = document.getElementById(errorId);
+        const result = validatorFn(input.value, ...args);
+        if (!result.isValid) {
+          input.classList.add('border-rose-500', 'bg-rose-50/20');
+          input.classList.remove('border-neutral-300');
+          errEl.textContent = result.message;
+          errEl.classList.remove('hidden');
+          hasError = true;
+        } else {
+          input.classList.remove('border-rose-500', 'bg-rose-50/20');
+          input.classList.add('border-neutral-300');
+          errEl.classList.add('hidden');
+        }
+      }
+
+      // Check fields
+      check('email', 'error-email', validateEmail);
+      check('password', 'error-password', validatePassword, isSignUp);
+
+      if (isSignUp) {
+        check('fullname', 'error-fullname', validateRequired, 'Full Name');
+        check('phone', 'error-phone', validatePhoneNumber);
+        check('confirmPassword', 'error-confirm', validateConfirmPassword, document.getElementById('password').value);
+        if (currentPortal === 'admin') {
+          check('adminCode', 'error-admincode', validateRequired, 'Admin Security Key');
+        }
+      }
+
+      const alertBox = document.getElementById('alert-box');
+      if (hasError) {
+        alertBox.className = 'mb-6 p-3.5 rounded-lg text-xs flex items-center gap-2 bg-rose-50 border border-rose-200 text-rose-800';
+        alertBox.textContent = 'Validation Failed: Please resolve the highlighted required fields and pattern requirements above.';
+        alertBox.classList.remove('hidden');
+      } else {
+        alertBox.className = 'mb-6 p-3.5 rounded-lg text-xs flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-800';
+        alertBox.textContent = 'Success! JavaScript validations verified. Authenticating to ' + (currentPortal === 'admin' ? 'Admin Portal' : 'Workspace') + '...';
+        alertBox.classList.remove('hidden');
+        setTimeout(() => {
+          window.location.href = currentPortal === 'admin' ? 'admin.html' : 'index.html';
+        }, 1200);
+      }
+    });
+
+    // Autofill helpers
+    document.getElementById('btn-fill-researcher').onclick = () => {
+      currentPortal = 'client';
+      isSignUp = false;
+      syncUI();
+      document.getElementById('email').value = 'evelyn.vance@nexus.ai';
+      document.getElementById('password').value = 'Nexus@Research2026!';
+    };
+    document.getElementById('btn-fill-admin').onclick = () => {
+      currentPortal = 'admin';
+      isSignUp = false;
+      syncUI();
+      document.getElementById('email').value = 'admin@nexus.ai';
+      document.getElementById('password').value = 'Admin#NexusPass88';
+    };
+    document.getElementById('btn-fill-signup').onclick = () => {
+      isSignUp = true;
+      syncUI();
+      document.getElementById('fullname').value = 'Dr. Nirav Nimavat';
+      document.getElementById('phone').value = '+19876543210';
+      document.getElementById('email').value = 'nirav.nimavat@nexus.ai';
+      document.getElementById('password').value = 'NexusSecure#2026';
+      document.getElementById('confirmPassword').value = 'NexusSecure#2026';
+      if (currentPortal === 'admin') {
+        document.getElementById('adminCode').value = 'NX-ROOT-92610';
+      }
+    };
+  </script>
+</body>
+</html>

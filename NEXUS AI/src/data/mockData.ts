@@ -1,0 +1,538 @@
+import {
+  GraphNode,
+  GraphEdge,
+  ThoughtStream,
+  ExplorationItem,
+  PricingPlan,
+  AdminUser,
+  NeuralModel,
+  SubscriberAudit,
+  SystemActivity,
+  TelemetryPoint,
+} from '../types/nexus.ts';
+
+// Fig 1.1 Landscape Nodes
+export const initialLandscapeNodes: GraphNode[] = [
+  {
+    id: 'nexus-core',
+    name: 'Nexus Core',
+    type: 'Core',
+    x: 420,
+    y: 110,
+    inference: 'Central Controller v4.2',
+    linkedCount: 4,
+    updated: 'Today',
+    description: 'Central orchestration engine coordinating distributed neural models and multi-modal knowledge synthesis.',
+  },
+  {
+    id: 'quantum-cognition',
+    name: 'Quantum Cognition',
+    type: 'Idea',
+    x: 230,
+    y: 180,
+    inference: 'Nexus Core',
+    linkedCount: 4,
+    updated: 'Today',
+    description: 'Non-classical probabilistic state mapping for continuous decision pathways and memory retrieval.',
+  },
+  {
+    id: 'project-aether',
+    name: 'Project Aether',
+    type: 'Project',
+    x: 540,
+    y: 200,
+    inference: 'GPT-Nexus Core',
+    linkedCount: 3,
+    updated: '2 hours ago',
+    description: 'Long-horizon research pipeline connecting biological neural topologies with silicon attunement.',
+  },
+  {
+    id: 'researcher',
+    name: 'Researcher',
+    type: 'Agent',
+    x: 320,
+    y: 330,
+    inference: 'Human-in-the-Loop',
+    linkedCount: 3,
+    updated: '10 mins ago',
+    description: 'Active principal investigator node supervising cognitive synthesis and validating hypotheses.',
+  },
+  {
+    id: 'genomic-data',
+    name: 'Genomic Data',
+    type: 'Dataset',
+    x: 480,
+    y: 340,
+    inference: 'BioNeuron V4',
+    linkedCount: 3,
+    updated: 'Yesterday',
+    description: 'High-throughput structural sequence distributions and folded protein attractor geometries.',
+  },
+];
+
+export const initialLandscapeEdges: GraphEdge[] = [
+  { source: 'quantum-cognition', target: 'nexus-core' },
+  { source: 'nexus-core', target: 'project-aether' },
+  { source: 'quantum-cognition', target: 'project-aether' },
+  { source: 'quantum-cognition', target: 'researcher' },
+  { source: 'researcher', target: 'genomic-data' },
+  { source: 'quantum-cognition', target: 'genomic-data' },
+  { source: 'project-aether', target: 'genomic-data' },
+];
+
+// Fig 1.2 Thought Streams
+export const initialThoughtStreams: ThoughtStream[] = [
+  {
+    id: 'quantum-cognition',
+    title: 'Quantum Cognition',
+    selected: true,
+    activeModel: 'NEXUS Core 4.2',
+    relationalDependency: '94.2%',
+    project: 'Aether',
+    state: 'Active',
+    steps: [
+      {
+        stepNumber: 'STEP 01',
+        title: 'Seed Hypothesis',
+        content: 'Can non-linear transitions correlate with genomic data?',
+        timestamp: '08:12 AM',
+        confidence: 0.96,
+      },
+      {
+        stepNumber: 'STEP 02',
+        title: 'Attractor Synthesis',
+        content: 'Structural similarity found across state distributions.',
+        timestamp: '08:24 AM',
+        confidence: 0.94,
+      },
+      {
+        stepNumber: 'STEP 03',
+        title: 'Evolved Intelligence',
+        content: 'Memory retrieval follows continuous state.',
+        timestamp: '08:35 AM',
+        confidence: 0.98,
+      },
+    ],
+  },
+  {
+    id: 'bioneuron-folding',
+    title: 'BioNeuron Folding',
+    selected: false,
+    activeModel: 'BioNeuron V4.1',
+    relationalDependency: '88.7%',
+    project: 'BioNeuron V4',
+    state: 'Active',
+    steps: [
+      {
+        stepNumber: 'STEP 01',
+        title: 'Folding Invariance',
+        content: 'Determining invariant backbone geometry across mutated peptide strings.',
+        timestamp: 'Yesterday',
+        confidence: 0.92,
+      },
+      {
+        stepNumber: 'STEP 02',
+        title: 'Thermal Dispersion',
+        content: 'Energy minimization confirms steady state conformation.',
+        timestamp: 'Yesterday',
+        confidence: 0.89,
+      },
+    ],
+  },
+  {
+    id: 'aether-pipeline',
+    title: 'Aether Pipeline',
+    selected: false,
+    activeModel: 'GPT-Nexus Core',
+    relationalDependency: '91.5%',
+    project: 'Project Aether',
+    state: 'Active',
+    steps: [
+      {
+        stepNumber: 'STEP 01',
+        title: 'Multi-Modal Ingestion',
+        content: 'Streaming cross-disciplinary telemetry through unified neural latent space.',
+        timestamp: '3 days ago',
+        confidence: 0.95,
+      },
+    ],
+  },
+];
+
+// Fig 1.3 Connected Systems Topology
+export const initialConnectedSystemsNodes: GraphNode[] = [
+  {
+    id: 'nexus-neural-core',
+    name: 'Nexus Neural Core',
+    type: 'Core',
+    x: 220,
+    y: 210,
+    inference: 'Core Hub v4.2',
+    linkedCount: 14,
+    updated: 'Today',
+    description: 'Central cognitive nexus managing multi-tier attention mechanisms and relational graphs.',
+  },
+  {
+    id: 'aether-synthesis',
+    name: 'Aether Synthesis',
+    type: 'Project',
+    x: 400,
+    y: 120,
+    inference: 'Project Pipeline',
+    linkedCount: 8,
+    updated: 'Today',
+    description: 'Synthesizing continuous attractor geometries across active research threads.',
+  },
+  {
+    id: 'genomic-matrix',
+    name: 'Genomic Matrix',
+    type: 'Dataset',
+    x: 490,
+    y: 270,
+    inference: 'BioNeuron V4',
+    linkedCount: 9,
+    updated: 'Yesterday',
+    description: 'High-density relational database containing 4.8M folded sequences.',
+  },
+  {
+    id: 'researcher-sys',
+    name: 'Researcher',
+    type: 'Agent',
+    x: 290,
+    y: 310,
+    inference: 'Human Verification',
+    linkedCount: 6,
+    updated: 'Active now',
+    description: 'Principal investigator governance and credentialed verification node.',
+  },
+];
+
+export const initialConnectedSystemsEdges: GraphEdge[] = [
+  { source: 'nexus-neural-core', target: 'aether-synthesis' },
+  { source: 'nexus-neural-core', target: 'researcher-sys' },
+  { source: 'aether-synthesis', target: 'genomic-matrix' },
+  { source: 'researcher-sys', target: 'genomic-matrix' },
+  { source: 'nexus-neural-core', target: 'genomic-matrix' },
+];
+
+// Fig 1.4 Exploration Content
+export const initialExplorationItems: ExplorationItem[] = [
+  // Deep Research
+  {
+    id: 'exp-1',
+    title: 'Genomic Pattern Topology',
+    category: 'research',
+    description: 'Topological analysis of non-linear conformational manifolds across multi-species genomic structures.',
+    metadata: '14 nodes · 8.2k citations · Updated today',
+    authorOrLead: 'Dr. Evelyn Vance',
+    status: 'Peer Reviewed',
+  },
+  {
+    id: 'exp-2',
+    title: 'BioNeuron Folding V4',
+    category: 'research',
+    description: 'Thermodynamic modeling of synaptic fold transitions using transformer-based spatial field estimators.',
+    metadata: '22 nodes · 3.4k citations · Updated 2 days ago',
+    authorOrLead: 'Dr. Marcus Thorne',
+    status: 'In Evaluation',
+  },
+  // Active Projects
+  {
+    id: 'exp-3',
+    title: 'Project Aether Pipeline',
+    category: 'projects',
+    description: 'Continuous synthesis pipeline harmonizing quantum cognitive vectors with live laboratory instrumentation.',
+    metadata: 'Core pipeline · 18 collaborators · Active milestone 3',
+    authorOrLead: 'Elena Rostova',
+    status: 'Phase 2 Operational',
+  },
+  {
+    id: 'exp-4',
+    title: 'Attractor Basin Dynamics',
+    category: 'projects',
+    description: 'Simulation workspace for chaotic attractor basins governing neuro-symbolic reasoning stability.',
+    metadata: 'Computational engine · 4.2M states mapped',
+    authorOrLead: 'Alan Turing Institute',
+    status: 'Live Simulation',
+  },
+  // People Nodes
+  {
+    id: 'exp-5',
+    title: 'Dr. Marcus Thorne',
+    category: 'people',
+    description: 'Lead Fellow in Bio-Computational Systems and Cognitive Architectures. Directing BioNeuron Folding.',
+    metadata: 'Principal Scientist · 42 published papers · Cambridge Hub',
+    authorOrLead: 'm.thorne@nexus.ai',
+    status: 'Online',
+  },
+  {
+    id: 'exp-6',
+    title: 'Elena Rostova',
+    category: 'people',
+    description: 'Senior Research Engineer specializing in high-dimensional latent manifolds and Aether infrastructure.',
+    metadata: 'System Lead · 18 pipeline deployments · Zurich Lab',
+    authorOrLead: 'e.rostova@nexus.ai',
+    status: 'Active Workspace',
+  },
+];
+
+// Fig 1.5 Tier Plans
+export const pricingPlans: PricingPlan[] = [
+  {
+    id: 'starter',
+    name: 'Starter Plan',
+    price: '$0',
+    period: '/ month',
+    description: 'Ideal for individual researchers and academic exploration.',
+    userCount: '840 Users',
+    isCurrent: false,
+    features: [
+      '1 Active Landscape Canvas',
+      '50 Thread Messages/day',
+      'Basic Model Access',
+    ],
+  },
+  {
+    id: 'professional',
+    name: 'Professional Research',
+    price: '$49',
+    period: '/ month',
+    description: 'Full capabilities for active researchers and lab investigators.',
+    userCount: '522 Users',
+    isCurrent: true,
+    features: [
+      'Unlimited Canvases',
+      'Unlimited Threads',
+      'Full Model Suite',
+      'Priority Compute',
+    ],
+  },
+  {
+    id: 'enterprise',
+    name: 'Enterprise Node',
+    price: '$299',
+    period: '/ month',
+    description: 'Dedicated infrastructure, custom training, and governance.',
+    userCount: '120 Nodes',
+    isCurrent: false,
+    features: [
+      'Private Nodes',
+      'Custom Model Fine-Tuning',
+      'Dedicated Admin Portal',
+    ],
+  },
+];
+
+// Fig 2.1 & 2.2 Admin Users
+export const initialAdminUsers: AdminUser[] = [
+  {
+    id: 'usr-1',
+    name: 'Dr. Evelyn Vance',
+    email: 'evelyn.vance@nexus.ai',
+    plan: 'PROFESSIONAL',
+    status: 'ACTIVE',
+    lastActive: '10 mins',
+    joinedDate: '2024-09-01',
+    role: 'Principal Investigator',
+  },
+  {
+    id: 'usr-2',
+    name: 'Dr. Marcus Thorne',
+    email: 'm.thorne@nexus.ai',
+    plan: 'PROFESSIONAL',
+    status: 'ACTIVE',
+    lastActive: '1 hour',
+    joinedDate: '2025-01-15',
+    role: 'Cognitive Lead',
+  },
+  {
+    id: 'usr-3',
+    name: 'Elena Rostova',
+    email: 'e.rostova@nexus.ai',
+    plan: 'STARTER',
+    status: 'PENDING',
+    lastActive: '2 days',
+    joinedDate: '2026-08-20',
+    role: 'Research Engineer',
+  },
+  {
+    id: 'usr-4',
+    name: 'Alan Turing Institute',
+    email: 'research@turing.ac.uk',
+    plan: 'ENTERPRISE',
+    status: 'ACTIVE',
+    lastActive: 'Yesterday',
+    joinedDate: '2024-06-10',
+    role: 'Institutional Partner',
+  },
+];
+
+// Fig 2.3 Neural Models Workspace
+export const initialNeuralModels: NeuralModel[] = [
+  {
+    id: 'gpt-nexus-core',
+    name: 'GPT-Nexus Core',
+    status: 'ACTIVE',
+    description: 'Primary multi-modal intelligence reasoning engine.',
+    contextWindow: '128,000 Tokens',
+    weightsVersion: '2026.09-Refined',
+    lastUpdated: 'Today, 08:30 AM',
+    dailyInferences: '3.2M',
+    latency: '140ms',
+    clusterUptime: '99.9%',
+    temperature: 0.7,
+    maxTokens: 4096,
+    topP: 0.95,
+  },
+  {
+    id: 'bioneuron-folding',
+    name: 'BioNeuron Folding',
+    status: 'ACTIVE',
+    description: 'Specialized bio-molecular protein conformation and geometric engine.',
+    contextWindow: '64,000 Tokens',
+    weightsVersion: '2026.08-Alpha',
+    lastUpdated: 'Yesterday, 14:15 PM',
+    dailyInferences: '1.4M',
+    latency: '185ms',
+    clusterUptime: '99.8%',
+    temperature: 0.4,
+    maxTokens: 2048,
+    topP: 0.9,
+  },
+  {
+    id: 'quantmind-engine',
+    name: 'QuantMind Engine',
+    status: 'MAINT',
+    description: 'Quantum state simulation and non-linear dynamic attractor engine.',
+    contextWindow: '96,000 Tokens',
+    weightsVersion: '2026.07-Patch2',
+    lastUpdated: '3 days ago',
+    dailyInferences: '820K',
+    latency: '210ms',
+    clusterUptime: '98.5%',
+    temperature: 0.8,
+    maxTokens: 4096,
+    topP: 0.92,
+  },
+  {
+    id: 'nexus-legacy',
+    name: 'Nexus Legacy',
+    status: 'INACTIVE',
+    description: 'Deprecated generation-3 reasoning foundation preserved for archival benchmarks.',
+    contextWindow: '32,000 Tokens',
+    weightsVersion: '2025.12-Final',
+    lastUpdated: '2 months ago',
+    dailyInferences: '45K',
+    latency: '340ms',
+    clusterUptime: '99.0%',
+    temperature: 0.5,
+    maxTokens: 1024,
+    topP: 0.85,
+  },
+];
+
+// Fig 2.4 Subscriptions Audit Registry
+export const initialSubscriberAudits: SubscriberAudit[] = [
+  {
+    id: 'sub-1',
+    userName: 'Dr. Evelyn Vance',
+    plan: 'PROFESSIONAL',
+    status: 'ACTIVE',
+    startDate: '2024-09-01',
+    renewalDate: '2026-09-01',
+    monthlyRate: '$49',
+  },
+  {
+    id: 'sub-2',
+    userName: 'Dr. Marcus Thorne',
+    plan: 'PROFESSIONAL',
+    status: 'ACTIVE',
+    startDate: '2025-01-15',
+    renewalDate: '2026-01-15',
+    monthlyRate: '$49',
+  },
+  {
+    id: 'sub-3',
+    userName: 'Alan Turing Institute',
+    plan: 'ENTERPRISE',
+    status: 'ACTIVE',
+    startDate: '2024-06-10',
+    renewalDate: '2027-06-10',
+    monthlyRate: '$299',
+  },
+  {
+    id: 'sub-4',
+    userName: 'Elena Rostova',
+    plan: 'STARTER',
+    status: 'FREE TRIAL',
+    startDate: '2026-08-20',
+    renewalDate: '2026-09-20',
+    monthlyRate: '$0',
+  },
+];
+
+// Fig 2.1 Activity Stream
+export const initialSystemActivities: SystemActivity[] = [
+  {
+    id: 'act-1',
+    title: 'User Registered',
+    detail: 'new professional tier',
+    category: 'user',
+    timestamp: 'Just now',
+  },
+  {
+    id: 'act-2',
+    title: 'Model Updated',
+    detail: 'GPT-Nexus v4.2.1',
+    category: 'model',
+    timestamp: '12 mins ago',
+  },
+  {
+    id: 'act-3',
+    title: 'Subscription Changed',
+    detail: 'Enterprise',
+    category: 'subscription',
+    timestamp: '45 mins ago',
+  },
+  {
+    id: 'act-4',
+    title: 'Workspace Created',
+    detail: 'Project Aether',
+    category: 'workspace',
+    timestamp: '2 hours ago',
+  },
+];
+
+// Fig 2.5 Analytics Telemetry Points
+export const initialTelemetryPoints: TelemetryPoint[] = [
+  { date: 'Oct 12', computeLoad: 42, tokensMillion: 2.1, latencyMs: 152 },
+  { date: 'Oct 17', computeLoad: 56, tokensMillion: 2.8, latencyMs: 146 },
+  { date: 'Oct 22', computeLoad: 50, tokensMillion: 2.5, latencyMs: 148 },
+  { date: 'Oct 27', computeLoad: 72, tokensMillion: 3.6, latencyMs: 139 },
+  { date: 'Nov 01', computeLoad: 64, tokensMillion: 3.1, latencyMs: 142 },
+  { date: 'Nov 06', computeLoad: 85, tokensMillion: 4.2, latencyMs: 135 },
+];
+
+export const generatedReportsList = [
+  {
+    id: 'rep-1',
+    name: 'Q3 Compute Audit & Neural Inferences',
+    format: 'CSV / 4.2 MB',
+    date: '2026-11-01',
+    category: 'Compute Telemetry',
+  },
+  {
+    id: 'rep-2',
+    name: 'Global Subscriber Ledger & Plan Governance',
+    format: 'CSV / 1.8 MB',
+    date: '2026-11-05',
+    category: 'Billing Audit',
+  },
+  {
+    id: 'rep-3',
+    name: 'Topological Density & Node Convergence Log',
+    format: 'CSV / 890 KB',
+    date: '2026-11-10',
+    category: 'Research Metrics',
+  },
+];

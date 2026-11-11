@@ -1,0 +1,6 @@
+{
+  "name": "NEXUS AI – Intelligent Research Workspace & Admin Control",
+  "description": "Comprehensive intelligent research workspace and administrative governance platform featuring knowledge landscape graphs, evolving thought streams, connected systems topology, curated exploration, and admin controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
